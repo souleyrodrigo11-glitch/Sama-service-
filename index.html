@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sama Service</title>
+  <style>
+    body { margin:0; font-family:sans-serif; background:#f5f7f6; color:#1b2a27; }
+    header { background:#0f5c4d; color:white; padding:30px 20px; }
+    main { padding:20px; }
+    button, .lien {
+      display:block; width:100%; box-sizing:border-box;
+      background:white; border:2px solid #d5ded9; border-radius:10px;
+      padding:16px; margin-bottom:10px; font-size:1.1rem;
+      text-align:left; color:#1b2a27; text-decoration:none;
+    }
+    .jaune { background:#f2b90f; border:none; font-weight:bold; }
+    .pro { background:white; border-left:6px solid #f2b90f; border-radius:6px; padding:12px; margin-bottom:10px; }
+    .pro a { color:#0f5c4d; font-weight:bold; display:block; margin-top:6px; }
+    .cache { display:none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Sama Service</h1>
+  <p>Trouvez facilement un professionnel près de vous</p>
+</header>
+
+<main>
+
+  <!-- ACCUEIL -->
+  <section id="accueil">
+    <h2>Que voulez-vous faire ?</h2>
+    <p>Gratuit pour les clients. Contactez directement le professionnel sur WhatsApp.</p>
+    <button class="jaune" onclick="montrer('services')">J'ai un problème</button>
+    <a class="lien" href="https://docs.google.com/forms/d/e/1FAIpQLSeV-UIXUAPrlenmJV6z8vS4Hsn2MrrIB_G2h6cIDdaLUxG1yg/viewform">Je cherche du travail</a>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="cache">
+    <button onclick="montrer('accueil')">← Retour</button>
+    <h2>Nos services</h2>
+    <button onclick="afficherPros('Mécanicien')">🔧 Mécanicien</button>
+<button onclick="afficherPros('Plombier')">🚰 Plombier</button>
+<button onclick="afficherPros('Électricien')">💡 Électricien</button>
+<button onclick="afficherPros('Livreur')">🛵 Livreur</button>
+<button onclick="afficherPros('Maçon')">🧱 Maçon</button>
+  </section>
+
+  <!-- PROFESSIONNELS -->
+  <section id="pros" class="cache">
+    <button onclick="montrer('services')">← Retour</button>
+    <h2 id="titre"></h2>
+    <input id="recherche" oninput="filtrer()" placeholder="Votre quartier (ex : Pikine)" style="width:100%; box-sizing:border-box; padding:14px; font-size:1rem; margin-bottom:10px;">
+    <div id="liste"></div>
+  </section>
+
+</main>
+
+<script>
+  // Exemples : à remplacer par les vrais inscrits (numéros avec 221 devant)
+  var professionnels = {
+    "Mécanicien":  [ {nom:"Exemple Mécanicien",  quartier:"Dakar", tel:"221770000001"} ],
+    "Plombier":    [ {nom:"Exemple Plombier",    quartier:"Dakar", tel:"221770000002"} ],
+    "Électricien": [ {nom:"Exemple Électricien", quartier:"Dakar", tel:"221770000003"} ],
+    "Livreur":     [ {nom:"Exemple Livreur",     quartier:"Dakar", tel:"221770000004"} ],
+    "Maçon": [ {nom:"Exemple Maçon", quartier:"Dakar", tel:"221770000005"} ]
+  };
+
+  // Montre une section et cache les autres
+  function montrer(id) {
+    var ids = ["accueil", "services", "pros"];
+    for (var i = 0; i < ids.length; i++) {
+      document.getElementById(ids[i]).classList.add("cache");
+    }
+    document.getElementById(id).classList.remove("cache");
+  }
+
+  // Affiche les professionnels d'un métier
+  var metierActuel = "";
+
+function afficherPros(metier) {
+  metierActuel = metier;
+  document.getElementById("titre").textContent = metier;
+  document.getElementById("recherche").value = "";
+  filtrer();
+  montrer("pros");
+}
+
+function filtrer() {
+  var texte = document.getElementById("recherche").value.toLowerCase();
+  var liste = professionnels[metierActuel];
+  var html = "";
+  for (var i = 0; i < liste.length; i++) {
+    var p = liste[i];
+    if (p.quartier.toLowerCase().indexOf(texte) !== -1) {
+      html += '<div class="pro">' + p.nom + ' (' + p.quartier + ')' +
+              '<a href="https://wa.me/' + p.tel + '">WhatsApp</a>' +
+              '<a href="tel:+' + p.tel + '">Appeler</a></div>';
+    }
+  }
+  if (html === "") {
+    html = "<p>Aucun professionnel trouvé dans ce quartier.</p>";
+  }
+  document.getElementById("liste").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
